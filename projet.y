@@ -1,25 +1,30 @@
 %{
- int nb_lignes = 1; nb_col = 1;	
+ int nb_lignes = 1, nb_col = 1, nb_indent = 0;
 %}
 %token eol mc_int mc_float mc_char mc_bool mc_if mc_else mc_for mc_in mc_range mc_while
     op_aff op_sup op_sup_eg op_eg op_diff op_inf_eg op_inf op_add op_sous op_mul op_div op_and op_or op_not
-    po pf virg deux_points co cf cst_char cst_float signed_cst_int unsigned_cst_int cst_bool cmnt idf indent point
+    po pf virg deux_points co cf cst_char cst_float signed_cst_int unsigned_cst_int cst_bool cmnt idf indent dedent
 %start S
 %left op_add op_sous
 %left op_sup op_sup_eg op_eg op_diff op_inf_eg op_inf
 %left op_mul op_div
 
 %%
-S: DECLARATIONS INSTRUCTIONS {printf("Programme syntaxiquement correct");YYACCEPT;}
+S: DECLARATIONS INSTRUCTIONS{printf("Programme syntaxiquement correct\n");YYACCEPT;}
 
 DECLARATIONS: DEC DECLARATIONS
-    | cmnt eol DECLARATIONS
-    |
+    | CMNT DECLARATIONS
+    | INSTRUCTIONS
 ;
+
 INSTRUCTIONS: INST INSTRUCTIONS
-    | cmnt eol INSTRUCTIONS
+    | CMNT INSTRUCTIONS
     |
 ;
+
+CMNT: indent CMNT dedent
+    | cmnt eol
+; 
 
 DEC: LISTE_DEC
     | DEC_VAR
@@ -59,6 +64,7 @@ OP_ARITH: op_add
     | op_mul
     | op_sous
 ;
+
 OP_COMP: op_diff
     | op_eg
     | op_inf
@@ -66,6 +72,7 @@ OP_COMP: op_diff
     | op_sup
     | op_sup_eg
 ;
+
 OP_LOG: op_and
     | op_or
 ;
@@ -73,46 +80,57 @@ OP_LOG: op_and
 INST_AFF: idf op_aff EXP eol
 ;
 
-INST_IF: mc_if po EXP pf deux_points eol BLOC PARTIE_ELSE 
+INST_IF: mc_if po EXP pf deux_points eol indent INSTRUCTIONS dedent PARTIE_ELSE 
 ;
-BLOC: indent INST  
-    | indent INST BLOC
-    | indent cmnt eol BLOC
-;
-PARTIE_ELSE: mc_else deux_points eol BLOC
+
+PARTIE_ELSE: mc_else deux_points eol indent INSTRUCTIONS dedent
     |
 ;
 
-INST_WHILE: mc_while po EXP pf deux_points eol BLOC
+INST_WHILE: mc_while po EXP pf deux_points eol indent INSTRUCTIONS dedent
 ;
 
-INST_FOR: mc_for idf mc_in EXP_FOR deux_points eol BLOC
+INST_FOR: mc_for idf mc_in EXP_FOR deux_points eol indent INSTRUCTIONS dedent
 ;
+
 EXP_FOR: mc_range po unsigned_cst_int virg unsigned_cst_int pf
     | idf
 ;
 
-EXP: EXP OP_LOG EXP
-    | EXP OP_COMP EXP
-    | EXP OP_ARITH EXP
-    | op_not EXP
-    | po EXP pf
+EXP: EXP OP_COMP EXPA
+    | EXPA
+;
+
+EXPA: EXPA OP_ARITH EXPB
+    | EXPB
+;
+
+EXPB: EXPB OP_LOG EXPC
+    | EXPC
+;
+
+EXPC: op_not EXPC 
+    | EXPD
+;
+EXPD: po EXP pf
     | idf
     | CST
 ;
 
 CSTI: signed_cst_int
     | unsigned_cst_int
-;      
+;  
 
 %%
 main()
 {
-yyparse();
+    initialisation();
+    yyparse();
+    afficher();
 }
-yywrap()
-{}
+yywrap(){}
 int yyerror(char *msg)
-{ printf("Erreur syntaxique, ligne %d, colonne %d\n", nb_lignes, nb_col);
-   return 1;  
+{ 
+    printf("Erreur syntaxique, ligne %d, colonne %d\n", nb_lignes, nb_col);
+    return 1;  
 }
