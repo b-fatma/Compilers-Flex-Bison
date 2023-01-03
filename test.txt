@@ -1,16 +1,17 @@
-int X, A, X
+int X, A
+float Y, Z
+float X
+C = 'C'
 bool Tab[5]
-X = 1
-X = X + 1
+X = (-1)
+D = (-2.3)
 if (true>false):
     A = A + B
-    C = C + 1
+    T = 5
     if (true>false):
-            A = A + B 
+        A = A + B 
         C = C + 1
     else:
         C = C - 1
-    X = X-2
-else:
-    C = C - T
-Y = Y + not(A)
+    Y = Y + not(A)
+Y = 2.6
