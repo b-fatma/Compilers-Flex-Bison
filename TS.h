@@ -147,6 +147,21 @@ int double_declaration(char entite[])
   return -1;
 }
 
+void type_element(char entite[], char* type)
+{
+  liste_element * node = element_existe(liste, entite);
+  if(node != NULL) 
+  {
+    strcpy(type, node->data.type); 
+  }
+}
+
+// void initialiser_element(char entite[], float val)
+// {
+//   liste_element * node = element_existe(liste, entite);
+//   if(node != NULL) node->data.val = val;
+// }
+
 void afficher()
 {
 

@@ -1,6 +1,8 @@
 %{
 	#include "projet.tab.h"
 	#include "TS.h"
+	#include "quad.h"
+	#include "pile.h"
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
@@ -20,7 +22,6 @@ signed_cst_int [+-](0|[1-9][0-9]*)
 unsigned_cst_float (0|[1-9][0-9]*)\.[0-9]*
 signed_cst_float ([+-](0|[1-9][0-9]*)\.[0-9]*)
 cst ([1-9]{chiffre}*|0)
-cst_bool (true|false)
 %%
 ^[ ]*[^ \n]+  {     
 					unsigned int cpt_indent(char* ligne) 
@@ -60,7 +61,7 @@ cst_bool (true|false)
 						//nb_indent = nb_indent_crt;
 						nb_indent ++; 
 					    printf("INDENT\n"); 
-						//printf("%s", yytext); 
+						// printf("%s", yytext); 
 						return indent;
 					}
 					//if(nb_indent_crt == nb_indent){return;}
@@ -219,30 +220,65 @@ cst_bool (true|false)
 				nb_col += yyleng; 
 				return cf;
 			}
-{cst_char} 	{ 	rechercher(yytext, "cst_char", "char", 0, 0);
+{cst_char} 	{	
+				yylval.str = strdup(yytext); 
+				rechercher(yytext, "cst_char", "char", 0, 0);
 				nb_col += yyleng; 
 				return cst_char;
+			}
+"true" 		{
+				nb_col += yyleng;
+				yylval.str = strdup(yytext);
+				rechercher(yytext, "cst_bool", "bool", 1, 0); 
+				return cst_bool;
+			}
+"false" 	{
+				nb_col += yyleng;
+				yylval.str = strdup(yytext);
+				rechercher(yytext, "cst_bool", "bool", 0, 0); 
+				return cst_bool;
 			}
 {unsigned_cst_float} {
 						nb_col += yyleng;
 						//yylval.reel = atof(yytext);
-						yylval.str = strdup(yytext);
-						rechercher(yytext, "cst_float", "float", atof(yytext), 0);  
-						return unsigned_cst_float;
+						if(atof(yytext) > 32767 || atof(yytext) < -32768)
+						{
+							printf("Erreur lexicale, ligne %d, colonne %d, %s\n", nb_lignes, nb_col, yytext);
+						}
+						else
+						{
+							yylval.str = strdup(yytext);
+							rechercher(yytext, "cst_float", "float", atof(yytext), 0);  
+							return unsigned_cst_float;
+						}
 					}
 {signed_cst_float}  {
 						nb_col += yyleng;
 						//yylval.reel = atof(yytext);
-						yylval.str = strdup(yytext);
-						rechercher(yytext, "cst_float", "", atof(yytext), 0); 
-						return signed_cst_float;
+						if(atof(yytext) > 32767 || atof(yytext) < -32768)
+						{
+							printf("Erreur lexicale, ligne %d, colonne %d, %s\n", nb_lignes, nb_col, yytext);
+						}
+						else
+						{
+							yylval.str = strdup(yytext);
+							rechercher(yytext, "cst_float", "", atof(yytext), 0); 
+							return signed_cst_float;
+						}
 					}
 {signed_cst_int}	{
 						nb_col += yyleng;
 						//yylval.entier = atoi(yytext); 
-						yylval.str = strdup(yytext);
-						rechercher(yytext, "cst_int", "", atoi(yytext), 0);
-						return signed_cst_int;
+						if(atoi(yytext) > 32767 || atoi(yytext) < -32768)
+						{
+							printf("Erreur lexicale, ligne %d, colonne %d, %s\n", nb_lignes, nb_col, yytext);
+						}
+						else
+						{
+							yylval.str = strdup(yytext);
+							rechercher(yytext, "cst_int", "", atoi(yytext), 0);
+							return signed_cst_int;
+						}	
 					}
 {unsigned_cst_int} 	{
 						nb_col += yyleng;
@@ -251,18 +287,11 @@ cst_bool (true|false)
 						rechercher(yytext, "cst_int", "int", atoi(yytext), 0);
 						return unsigned_cst_int;
 					}
-{cst_bool} 	{
-				nb_col += yyleng;
-				yylval.str = strdup(yytext);
-				rechercher(yytext, "cst_bool", "cst", 0, 0); 
-				return cst_bool;
-			}
 {cmnt} 		{
 				nb_col += yyleng; 
 				return cmnt;
 			}
 {idf} 		{
-				yylval.str = strdup(yytext);
 				nb_col += yyleng; 
 				if(yyleng>8)
 				{
@@ -270,6 +299,7 @@ cst_bool (true|false)
 				}
                 else
 				{
+					yylval.str = strdup(yytext);
 					rechercher(yytext, "idf", "", 0, 0);
 					return idf;
 				}
