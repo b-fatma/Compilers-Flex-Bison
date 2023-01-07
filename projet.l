@@ -283,9 +283,16 @@ cst ([1-9]{chiffre}*|0)
 {unsigned_cst_int} 	{
 						nb_col += yyleng;
 						//yylval.entier = atoi(yytext);
-						yylval.str = strdup(yytext);
-						rechercher(yytext, "cst_int", "int", atoi(yytext), 0);
-						return unsigned_cst_int;
+						if(atoi(yytext) > 32767 || atoi(yytext) < -32768)
+						{
+							printf("Erreur lexicale, ligne %d, colonne %d, %s\n", nb_lignes, nb_col, yytext);
+						}
+						else
+						{
+							yylval.str = strdup(yytext);
+							rechercher(yytext, "cst_int", "int", atoi(yytext), 0);
+							return unsigned_cst_int;
+						}
 					}
 {cmnt} 		{
 				nb_col += yyleng; 
@@ -315,5 +322,9 @@ cst ([1-9]{chiffre}*|0)
 . 			{
 				printf("Erreur lexicale, ligne %d, colonne %d, %s\n", nb_lignes, nb_col, yytext); 
 				nb_col += yyleng;
+			}
+<<EOF>>   	{
+				if(nb_indent > 0) return dedent;
+				return;
 			}
 %%

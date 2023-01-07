@@ -44,7 +44,7 @@ else if (colon_quad==1) strcpy(quad[num_quad].op1,val);
 
 void afficher_qdr()
 {
-printf("*********************Les Quadruplets***********************\n");
+printf("\n*********************Les Quadruplets***********************\n");
 
 int i;
 

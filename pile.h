@@ -3,41 +3,48 @@
 
 typedef struct node {
     int data;
-    node* next;
+    struct node* next;
 }node;
 
-typedef struct stack{
-    node* head;
-}stack;
-
-stack pile;
+node* top;
 
 void init_stack()
 {
-    pile = (stack)malloc(sizeof(stack));
-    pile.head = NULL;
+    top = NULL;
 }
 
 int is_empty()
 {
-    if(pile.head == NULL) return 1;
+    if(top == NULL) return 1;
     return 0;
 }
 
-void add(int x)
+void push(int x)
 {
-    node * n = (node*)malloc(sizeof(node));
+    node* n = (node*)malloc(sizeof(node));
     n->data = x;
-    n->next = pile.head;
-    pile.head = n;
+    n->next = top;
+    top = n;
 }
 
-int remove()
+int pop()
 {
-    if(!is_empty(pile))
+    if(!is_empty())
     {
-    node * n = pile.head;
-    pile.head = pile.head->next;
-    return n->data;}
+        node* n = top;
+        top = top->next;
+        return n->data;
+    }
     return -1;
+}
+
+void free_stack()
+{
+    node *n;
+    while(top != NULL)
+    {
+        n = top;
+        top = top->next;
+        free(n);
+    }
 }

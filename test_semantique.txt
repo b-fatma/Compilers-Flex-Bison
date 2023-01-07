@@ -1,0 +1,26 @@
+int A, C, B
+float D
+bool Tab[20]
+X = 1
+if(true > false):
+    if(A > B):
+        A = B
+    else:
+        for A in range (2, 4):
+            C = C + 1
+        A = A - B
+    A = 1 + C
+    B = A and C or B and A 
+    A = not X 
+    A = not(A or B) and C
+while(true > false):
+    C = A - C + 1 * C
+    while(true > false):
+        C = A - C + 1 * C
+    C = A - C + 1 * C
+    for A in range (2, 4):
+        C = C + 1
+    X = X + 1
+for A in range (2, 4):
+    C = C + 1
+X = X + 1

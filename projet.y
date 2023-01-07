@@ -9,9 +9,9 @@
     int save_fin_or[20];
     int save_deb_else[20];
     int save_fin_if[20];
-    int i_and = 0, i_else = 0, i_if = 0;
-    int i_or = 0;
-    int j, deb_else, fin_if, deb_while, cond_for;
+    int i_and = 0, i_or = 0;
+    int err = 0;
+    int j, cond_for;
 %}
 
 %union{
@@ -23,8 +23,8 @@
 
 %token eol mc_int mc_float mc_char mc_bool mc_if mc_else mc_for mc_in mc_range mc_while
     op_aff op_sup op_sup_eg op_eg op_diff op_inf_eg op_inf op_add op_sous op_mul op_div op_and op_or op_not
-    po pf virg deux_points co cf cst_bool cmnt indent dedent
-%token<str> idf cst_char
+    po pf virg deux_points co cf cmnt indent dedent
+%token<str> idf cst_char cst_bool
 %token<str> signed_cst_int unsigned_cst_int
 %token<str> signed_cst_float unsigned_cst_float
 
@@ -36,9 +36,20 @@
 
 %type <NT> EXP EXPA EXPB EXPC EXPE EXP_LOG EXP_AND EXP_AND__ EXP_OR EXP_NOT CONDITION
 
-%type <str> CST
+%type <NT> CST
 
 %%
+
+/* remarques:
+le compilateur ne gère pas: 
+    - dedents multiples
+    - generation des quadruplets dans le cas de blocs imbriqués
+    - if sans else
+    - la declaration non typée pose problème puiceque elle a la même syntaxe que 
+    l'instruction d'affectation, ça aurait été plus simple si le pgm n'était pas 
+    divisé en déclarations/instructions.
+    - manipulation des tableaux: remplissage, accès aux éléments */
+
 S: DECLARATIONS INSTRUCTIONS    {
                                     printf("Programme syntaxiquement correct\n");
                                     YYACCEPT;
@@ -80,7 +91,10 @@ TYPE: mc_int    {
 ;
 LISTE_IDF: idf virg LISTE_IDF   {
                                     if(double_declaration($1))
+                                    {
                                         printf("Erreur semantique: double declaration, ligne %d\n", nb_lignes-1);
+                                        err = 1;
+                                    }
                                     else
                                     { 
                                         inserer_type($1, save_type);
@@ -88,7 +102,10 @@ LISTE_IDF: idf virg LISTE_IDF   {
                                 }
     | idf   {
                 if(double_declaration($1)) 
+                {
                     printf("Erreur semantique: double declaration de %s, ligne %d\n", $1, nb_lignes-1);
+                    err = 1;
+                }
                 else 
                 {
                     inserer_type($1, save_type);
@@ -100,38 +117,46 @@ DEC_VAR: idf op_aff CST eol {
                                 if(double_declaration($1)) 
                                 {
                                     printf("Erreur semantique: double declaration, ligne %d\n", nb_lignes-1);
+                                    err = 1;
                                 }
                                 else 
                                 {   
-                                    quadr("=", $3, "", $1);
+                                    quadr("=", $3.res, "", $1);
                                     inserer_type($1, save_type);
                                 }
                             }
 ;
 
+
 CST: cst_bool               {
-                                // strcpy($$, $1);
+                                strcpy($$.res, $1);
+                                strcpy($$.type, "bool");
                                 strcpy(save_type, "bool");
                             }
     | cst_char              {
-                                strcpy($$, strdup($1));
+                                strcpy($$.res, $1);
+                                strcpy($$.type, "char");
                                 strcpy(save_type, "char");
                             }
     | unsigned_cst_float    {
-                                strcpy($$, strdup($1));
+                                strcpy($$.res, $1);
+                                strcpy($$.type, "float");
                                 strcpy(save_type, "float");
                             }
     | po signed_cst_float pf    {
-                                    strcpy($$, strdup($2));
+                                    strcpy($$.res, $2);
+                                    strcpy($$.type, "float");
                                     strcpy(save_type, "float");
                                     inserer_type($2, "float");
                                 }
     | unsigned_cst_int      {
-                                strcpy($$, strdup($1));
+                                strcpy($$.res, $1);
+                                strcpy($$.type, "int");
                                 strcpy(save_type, "int");
                             }
     | po signed_cst_int pf  {
-                                strcpy($$, strdup($2));
+                                strcpy($$.res, $2);
+                                strcpy($$.type, "int");
                                 strcpy(save_type, "int");
                                 inserer_type($2, "int");
                             }
@@ -150,10 +175,11 @@ INST: INST_AFF
 ;
 
 
-INST_AFF: idf op_aff EXPA eol   {
+INST_AFF: idf op_aff EXP_LOG eol   {
                                     if(!double_declaration($1))
                                     {
                                         printf("Erreur semantique: idf %s non declare, ligne %d\n", $1, nb_lignes-1);
+                                        err = 1;
                                     }
                                     else
                                     {
@@ -161,6 +187,7 @@ INST_AFF: idf op_aff EXPA eol   {
                                         if(strcmp(type, $3.type))
                                         {
                                             printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes-1);
+                                            err = 1;
                                         }
                                         else
                                         {
@@ -176,24 +203,27 @@ BLOC : indent DECLARATIONS INSTRUCTIONS dedent
 
 //INSTRUCTION IF
 INST_IF: B PARTIE_ELSE  {
-                            // printf("routine 3\n");
+                            // routine 3
                             sprintf(tmp, "%d", qc);
-                            ajour_quad(fin_if, 1, tmp);
+                            // MAJ fin_if
+                            ajour_quad(pop(), 1, tmp);
                         }
 ;
 
 B: A BLOC   {
-                // printf("routine 2\n");
-                fin_if = qc;
+                // routine 2
                 quadr("BR", "","", ""); //généré quand il y a un else aussi (solve it)
                 sprintf(tmp, "%d", qc);
-                ajour_quad(deb_else, 1, tmp);
+                ajour_quad(pop(), 1, tmp);
+                // fin_if;
+                push(qc-1);
             }
 ;
 
 A: mc_if po CONDITION pf deux_points eol    {
-                                                // printf("routine 1\n");
-                                                deb_else = qc;
+                                                // routine 1
+                                                // deb_else;
+                                                push(qc);
                                                 quadr("BZ", "", "", $3.res);
                                             }
 ;
@@ -204,24 +234,34 @@ PARTIE_ELSE: mc_else deux_points eol BLOC
 
 //INSTRUCTION WHILE
 INST_WHILE: C BLOC  {
-                        sprintf(tmp, "%d", deb_while);
+                        // MAJ save_fin
+                        sprintf(tmp, "%d", qc+1);
+                        ajour_quad(pop(), 1, tmp);
+                        // debut_while
+                        sprintf(tmp, "%d", pop());
                         quadr("BR", tmp, "", "");
-                        sprintf(tmp, "%d", qc);
-                        ajour_quad(deb_while, 1, tmp);
                     }
 ;
 
-C: mc_while po CONDITION pf deux_points eol {
-                                                deb_while = qc;
-                                                quadr("BZ", "", "", $3.res);
+C: D CONDITION pf deux_points eol           {
+                                                // save_fin
+                                                push(qc);
+                                                quadr("BZ", "", "", $2.res);
                                             }
 ;
+
+D: mc_while po                              {
+                                                // debut_while
+                                                push(qc);
+                                            }
+; 
 
 //INSTRUCTION FOR 
 INST_FOR: mc_for EXP_FOR deux_points eol BLOC {
                                                             sprintf(tmp, "T%d", nT); nT++;
                                                             quadr("+", tmp2, "1", tmp);
                                                             quadr("=", tmp, "", tmp2);
+                                                            cond_for = pop();
                                                             sprintf(tmp, "%d", cond_for);
                                                             quadr("BR", tmp, "", "");
                                                             sprintf(tmp, "%d", qc);
@@ -232,7 +272,8 @@ INST_FOR: mc_for EXP_FOR deux_points eol BLOC {
 EXP_FOR: idf mc_in mc_range po unsigned_cst_int virg unsigned_cst_int pf  {
                                                                     strcpy(tmp2, $1);
                                                                     quadr("=", $5, "", tmp2);
-                                                                    cond_for = qc;
+                                                                    push(qc);
+                                                                    //cond_for = qc;
                                                                     quadr("BGE", "", tmp2, $7);
                                                                 }
     | idf mc_in idf
@@ -249,6 +290,7 @@ EXP: EXPA op_diff EXPA      {
                                 if(strcmp($1.type, $3.type))
                                 {
                                     printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                    err = 1;
                                 }
                                 else
                                 {
@@ -267,6 +309,7 @@ EXP: EXPA op_diff EXPA      {
                                 if(strcmp($1.type, $3.type))
                                 {
                                     printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                    err = 1;
                                 }
                                 else
                                 {
@@ -285,6 +328,7 @@ EXP: EXPA op_diff EXPA      {
                                 if(strcmp($1.type, $3.type))
                                 {
                                     printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                    err = 1;
                                 }
                                 else
                                 {
@@ -303,6 +347,7 @@ EXP: EXPA op_diff EXPA      {
                                 if(strcmp($1.type, $3.type))
                                 {
                                     printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                    err = 1;
                                 }
                                 else
                                 {
@@ -321,6 +366,7 @@ EXP: EXPA op_diff EXPA      {
                                 if(strcmp($1.type, $3.type))
                                 {
                                     printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                    err = 1;
                                 }
                                 else
                                 {
@@ -339,6 +385,7 @@ EXP: EXPA op_diff EXPA      {
                                 if(strcmp($1.type, $3.type))
                                 {
                                     printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                    err = 1;
                                 }
                                 else
                                 {
@@ -352,6 +399,10 @@ EXP: EXPA op_diff EXPA      {
                                     quadr("=", "1", "", $$.res);                                   
                                     strcpy($$.type, $1.type);
                                 }
+                            }
+    | EXPA                  {
+                                strcpy($$.res, $1.res);
+                                strcpy($$.type, $1.type);
                             }                                              
 ;
 
@@ -361,6 +412,7 @@ EXPA: EXPA op_add EXPB      {
                                 if(strcmp($1.type, $3.type))
                                 {
                                     printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                    err = 1;
                                 }
                                 else
                                 {
@@ -374,6 +426,7 @@ EXPA: EXPA op_add EXPB      {
                                 if(strcmp($1.type, $3.type))
                                 {
                                     printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                    err = 1;
                                 }
                                 else
                                 {
@@ -394,6 +447,7 @@ EXPB: EXPB op_mul EXPC      {
                                 if(strcmp($1.type, $3.type))
                                 {
                                     printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                    err = 1;
                                 }
                                 else
                                 {
@@ -407,6 +461,7 @@ EXPB: EXPB op_mul EXPC      {
                                 if(strcmp($1.type, $3.type))
                                 {
                                     printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                    err = 1;
                                 }
                                 else
                                 {
@@ -427,8 +482,11 @@ EXPC: po EXPA pf            {
                                 strcpy($$.type, $2.type);
                             }
     | idf                   {
-                                if(!double_declaration($1)) 
+                                if(!double_declaration($1))
+                                { 
                                     printf("Erreur semantique: idf %s non declare, ligne %d\n", $1, nb_lignes);
+                                    err = 1;
+                                }
                                 else
                                 {
                                     strcpy($$.res, $1);
@@ -436,12 +494,15 @@ EXPC: po EXPA pf            {
                                 }
                             }
     | CST                   {
-                                if(!double_declaration($1)) 
+                                if(!double_declaration($1.res))
+                                { 
                                     printf("Erreur semantique: idf %s non declare, ligne %d\n", $1, nb_lignes);
+                                    err = 1;
+                                }
                                 else
                                 {
-                                    strcpy($$.res, $1);
-                                    type_element($1, type); strcpy($$.type, type);
+                                    strcpy($$.res, $1.res);
+                                    strcpy($$.type, $1.type);
                                 }
                             }
 ;
@@ -453,6 +514,7 @@ EXP_LOG: EXP_OR op_or EXP_LOG   {
                                     if(strcmp($1.type, $3.type))
                                     {
                                         printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                        err = 1;
                                     }
                                     else
                                     {
@@ -461,11 +523,10 @@ EXP_LOG: EXP_OR op_or EXP_LOG   {
                                     }
                                 }
         | EXP_OR op_or EXP_AND  {
-                                    printf("fin\n");
-                                    printf("%s, %s\n", $1.type, $3.type);
                                     if(strcmp($1.type, $3.type))
                                     {
                                         printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                        err = 1;
                                     }
                                     else
                                     {
@@ -507,6 +568,7 @@ EXP_AND: EXP_AND__ op_and EXP_AND  {
                                     if(strcmp($1.type, $3.type))
                                     {
                                         printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                        err = 1;
                                     }
                                     else
                                     {
@@ -518,6 +580,7 @@ EXP_AND: EXP_AND__ op_and EXP_AND  {
                                     if(strcmp($1.type, $3.type))
                                     {
                                         printf("Erreur semantique: incompatibilite des types, ligne %d\n", nb_lignes);
+                                        err = 1;
                                     }
                                     else
                                     {
@@ -585,14 +648,19 @@ EXPE: po EXP_LOG pf         {
                             }
 ;
  
-
 %%
 main()
 {
+    init_stack();
     initialisation();
     yyparse();
     afficher();
-    afficher_qdr();
+    if(!err)
+    {
+        /* afficher les quadruplets s'il n'y a pas d'erreur sémantique */
+        afficher_qdr();
+    }
+    free_stack();
 }
 yywrap(){}
 int yyerror(char *msg)

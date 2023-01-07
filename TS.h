@@ -112,21 +112,21 @@ void rechercher(char entite[], char code[], char type[], float val, int y)
   {
     case 0:
       if(element_existe(liste, entite) != NULL) 
-        printf("l'entite existe deja\n");
+        printf("l'entite %s existe deja\n", entite);
       else 
         inserer(entite, code, type, val, 0);
       break;
 
     case 1:
       if(elt_existe(listem, entite)) 
-        printf("l'entite existe deja\n");
+        printf("l'entite %s existe deja\n", entite);
       else 
         inserer(entite, code, type, val, 1);
       break;
 
     case 2:
       if(elt_existe(listes, entite)) 
-        printf("l'entite existe deja\n");
+        printf("l'entite %s existe deja\n", entite);
       else 
         inserer(entite, code, type, val, 2);
       break;
@@ -165,7 +165,7 @@ void type_element(char entite[], char* type)
 void afficher()
 {
 
-  printf("/***************liste des symboles IDF*************/\n");
+  printf("\n/***************liste des symboles IDF*************/\n");
   printf("____________________________________________________________________\n");
   printf("\t| Nom_Entite |  Code_Entite   | Type_Entite      | Val_Entite\n");
   printf("____________________________________________________________________\n");
