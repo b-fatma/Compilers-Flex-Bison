@@ -46,8 +46,8 @@ le compilateur ne gère pas:
     divisé en déclarations/instructions.
     - manipulation des tableaux: remplissage, accès aux éléments */
 
-S: DECLARATIONS INSTRUCTIONS    {
-                                    printf("Programme syntaxiquement correct\n");
+S: DECLARATIONS     {
+                                    printf("\n\nProgramme syntaxiquement correct\n\n");
                                     YYACCEPT;
                                 }
 ;
@@ -58,7 +58,6 @@ DECLARATIONS: DEC DECLARATIONS
               d'affectation qui viennent juste après les déclarations
               (sinon il n'accepterait pas X = X + 1 dans le fichier exemple.txt 
               - 4eme remarque -)*/
-    |
 ;
 
 INSTRUCTIONS: INST INSTRUCTIONS 
