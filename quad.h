@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct expression {
-  char type[100];
-  char id[100];
-} expression;
 
 typedef struct qdr{
 

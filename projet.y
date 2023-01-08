@@ -46,7 +46,20 @@ le compilateur ne gère pas:
     divisé en déclarations/instructions.
     - manipulation des tableaux: remplissage, accès aux éléments */
 
-S: DECLARATIONS     {
+
+/* cette grammaire n'accepte les instructions d'affectation qui viennent juste après les déclarations
+(l'instruction X = X + 1 dans le fichier exemple.txt va générer une erreur semantique- 4eme remarque -) */
+
+/* S: DECLARATIONS INSTRUCTIONS
+;
+DECLARATIONS: DEC DECLARATIONS
+            | 
+;
+INSTRUCTIONS: INST INSTRUCTIONS
+            | 
+; */
+
+S: DECLARATIONS                 {
                                     printf("\n\nProgramme syntaxiquement correct\n\n");
                                     YYACCEPT;
                                 }
@@ -54,10 +67,6 @@ S: DECLARATIONS     {
 
 DECLARATIONS: DEC DECLARATIONS 
     |  INSTRUCTIONS  
-              /* j'ai rajouté cette règle pour qu'il accepte les instructions
-              d'affectation qui viennent juste après les déclarations
-              (sinon il n'accepterait pas X = X + 1 dans le fichier exemple.txt 
-              - 4eme remarque -)*/
 ;
 
 INSTRUCTIONS: INST INSTRUCTIONS 
@@ -111,6 +120,7 @@ LISTE_IDF: idf virg LISTE_IDF   {
                 }
                 else 
                 {
+                    printf("__declaration typee\n\n"); 
                     inserer_type($1, save_type);
                 }
             }
@@ -124,7 +134,8 @@ DEC_VAR: idf op_aff CST eol {
                                     err = 1;
                                 }
                                 else 
-                                {   
+                                {  
+                                    printf("__declaration non typee\n\n"); 
                                     quadr("=", $3.res, "", $1);
                                     inserer_type($1, $3.type);
                                 }
@@ -170,16 +181,17 @@ DEC_TAB: TYPE idf co unsigned_cst_int cf eol    {
                                                     }
                                                     else
                                                     {
+                                                        printf("__declaration d'un tableau\n\n"); 
                                                         sprintf(tmp, "tableau de %s", save_type);
                                                         inserer_type($2, tmp);
                                                     }
                                                 }
 ;
 
-INST: INST_AFF
-    | INST_FOR
-    | INST_WHILE
-    | INST_IF
+INST: INST_AFF  {printf("__fin_instruction: affectation\n\n"); }
+    | INST_FOR  {printf("__fin_instruction: for\n\n"); }
+    | INST_WHILE    {printf("__fin_instruction: while\n\n"); }
+    | INST_IF   {printf("__fin_instruction: if\n\n"); }
     | CMNT
 ;
 
@@ -206,7 +218,7 @@ INST_AFF: idf op_aff EXP eol    {
                                 }
 ;
 
-BLOC : indent DECLARATIONS INSTRUCTIONS dedent
+BLOC : indent DECLARATIONS dedent
 ;
 
 
