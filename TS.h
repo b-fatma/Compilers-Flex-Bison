@@ -112,21 +112,21 @@ void rechercher(char entite[], char code[], char type[], float val, int y)
   {
     case 0:
       if(element_existe(liste, entite) != NULL) 
-        printf("l'entite %s existe deja\n", entite);
+        printf("=> l'entite %s existe deja dans la TS\n", entite);
       else 
         inserer(entite, code, type, val, 0);
       break;
 
     case 1:
       if(elt_existe(listem, entite)) 
-        printf("l'entite %s existe deja\n", entite);
+        printf("=> l'entite %s existe deja dans la TS\n", entite);
       else 
         inserer(entite, code, type, val, 1);
       break;
 
     case 2:
       if(elt_existe(listes, entite)) 
-        printf("l'entite %s existe deja\n", entite);
+        printf("=> l'entite %s existe deja dans la TS\n", entite);
       else 
         inserer(entite, code, type, val, 2);
       break;
@@ -136,7 +136,6 @@ void rechercher(char entite[], char code[], char type[], float val, int y)
 void inserer_type(char entite[], char type[])
 {
   liste_element * node = element_existe(liste, entite);
-  // printf("%s\n", entite);
   if(node != NULL) strcpy(node->data.type, type);
 }
 
@@ -155,12 +154,6 @@ void type_element(char entite[], char* type)
     strcpy(type, node->data.type); 
   }
 }
-
-// void initialiser_element(char entite[], float val)
-// {
-//   liste_element * node = element_existe(liste, entite);
-//   if(node != NULL) node->data.val = val;
-// }
 
 void afficher()
 {

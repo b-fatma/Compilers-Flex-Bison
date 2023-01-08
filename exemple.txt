@@ -1,7 +1,30 @@
 int A, C, B
 float D
+
+#erreur syntaxique
+#int Tab2[-20]
+
+#erreurs semantiques
+#float Tab3[0]
+#A = 1 
+#float A
+
 bool Tab[20]
+Carac1 = 'C'
+Carac2 = 'D'
 X = 1
+X = X + 1
+
+#erreurs semantiques:
+#A = Carac1
+#A = B + D 
+#F = B
+
+#erreurs lexicales
+#Resultat 
+#X = 567899
+
+#true = 1 et false = 0
 if(true > false):
     if(A > B):
         A = B
@@ -23,4 +46,3 @@ while(true > false):
     X = X + 1
 for A in range (2, 4):
     C = C + 1
-X = X + 1

@@ -21,7 +21,6 @@ unsigned_cst_int (0|[1-9][0-9]*)
 signed_cst_int [+-](0|[1-9][0-9]*)
 unsigned_cst_float (0|[1-9][0-9]*)\.[0-9]*
 signed_cst_float ([+-](0|[1-9][0-9]*)\.[0-9]*)
-cst ([1-9]{chiffre}*|0)
 %%
 ^[ ]*[^ \n]+  {     
 					unsigned int cpt_indent(char* ligne) 
@@ -71,176 +70,209 @@ cst ([1-9]{chiffre}*|0)
 
 
 "int" 		{
+				printf("mot cle reconnu: %s\n", yytext);
 				rechercher(yytext, "mc_int", 0, 0, 1); 
 				nb_col += yyleng; 
 				return mc_int;
 			}
 "float" 	{
+				printf("mot cle reconnu: %s\n", yytext);
 				rechercher(yytext, "mc_float", 0, 0, 1); 
 				nb_col += yyleng; 
 				return mc_float;
 			}
 "char" 		{
+				printf("mot cle reconnu: %s\n", yytext);
 				rechercher(yytext, "mc_char", 0, 0, 1); 
 				nb_col += yyleng; 
 				return mc_char;
 			}
 "bool" 		{
+				printf("mot cle reconnu: %s\n", yytext);
 				rechercher(yytext, "mc_bool", 0, 0, 1); 
 				nb_col += yyleng; 
 				return mc_bool;
 			}
 "if" 		{
+				printf("mot cle reconnu: %s\n", yytext);
 				rechercher(yytext, "mc_if", 0, 0, 1); 
 				nb_col += yyleng; 
 				return mc_if;
 			}
 "else" 		{
+				printf("mot cle reconnu: %s\n", yytext);
 				rechercher(yytext, "mc_else", 0, 0, 1); 
 				nb_col += yyleng; 
 				return mc_else;
 			}
 "for" 		{
+				printf("mot cle reconnu: %s\n", yytext);
 				rechercher(yytext, "mc_for", 0, 0, 1); 
 				nb_col += yyleng; 
 				return mc_for;
 			}
 "in" 		{
+				printf("mot cle reconnu: %s\n", yytext);
 				rechercher(yytext, "mc_in", 0, 0, 1); 
 				nb_col += yyleng; 
 				return mc_in;
 			}
 "range" 	{
+				printf("mot cle reconnu: %s\n", yytext);
 				rechercher(yytext, "mc_range", 0, 0, 1); 
 				nb_col += yyleng; 
 				return mc_range;
 			}
 "while" 	{
+				printf("mot cle reconnu: %s\n", yytext);
 				rechercher(yytext, "mc_while", 0, 0, 1); 
 				nb_col += yyleng; 
 				return mc_while;
 			}
 "=" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op aff", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_aff;
 			}
 ">" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op sup", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_sup;
 			}
 ">=" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op sup ou eg", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_sup_eg;
 			}
 "==" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op eg", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_eg;
 			}
 "!=" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op diff", 0, 0, 2);
 				nb_col += yyleng; 
 				return op_diff;
 			}
 "<=" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op inf ou eg", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_inf_eg;
 			}
 "<" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op inf", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_inf;
 			}
 "+" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op add", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_add;
 			}
 "-" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op sous", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_sous;
 			}
 "*" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op mult", 0, 0, 2); 
 				nb_col += yyleng;
 				return op_mul;
 			}
 "/" 		{	
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op div", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_div;
 			}
 "and" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op and", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_and;
 			}
 "or" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op or", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_or;
 			}
 "not" 		{
+				printf("operateur reconnu: %s\n", yytext);
 				rechercher(yytext, "op not", 0, 0, 2); 
 				nb_col += yyleng; 
 				return op_not;
 			}
 "(" 		{	
+				printf("symbole reconnu: %s\n", yytext);
 				rechercher(yytext, "par ouv", 0, 0, 2); 
 				nb_col += yyleng; 
 				return po;
 			}
 ")" 		{
+				printf("symbole reconnu: %s\n", yytext);
 				rechercher(yytext, "par ferm", 0, 0, 2); 
 				nb_col += yyleng; 
 				return pf;
 			}
 "," 		{
+				printf("symbole reconnu: %s\n", yytext);
 				rechercher(yytext, "virg", 0, 0, 2); 
 				nb_col += yyleng; 
 				return virg;
 			}
 ":" 		{
+				printf("symbole reconnu: %s\n", yytext);
 				rechercher(yytext, "deux points", 0, 0, 2); 
 				nb_col += yyleng; 
 				return deux_points;
 			}
 "[" 		{
+				printf("symbole reconnu: %s\n", yytext);
 				rechercher(yytext, "croch ouv", 0, 0, 2); 
 				nb_col += yyleng; 
 				return co;
 			}
 "]" 		{
+				printf("symbole reconnu: %s\n", yytext);
 				rechercher(yytext, "croch ferm", 0, 0, 2); 
 				nb_col += yyleng; 
 				return cf;
 			}
 {cst_char} 	{	
+				printf("constante reconnue: %s\n", yytext);
 				yylval.str = strdup(yytext); 
 				rechercher(yytext, "cst_char", "char", 0, 0);
 				nb_col += yyleng; 
 				return cst_char;
 			}
 "true" 		{
+				printf("constante reconnue: %s\n", yytext);
 				nb_col += yyleng;
 				yylval.str = strdup(yytext);
 				rechercher(yytext, "cst_bool", "bool", 1, 0); 
 				return cst_bool;
 			}
 "false" 	{
+				printf("constante reconnue: %s\n", yytext);
 				nb_col += yyleng;
 				yylval.str = strdup(yytext);
 				rechercher(yytext, "cst_bool", "bool", 0, 0); 
 				return cst_bool;
 			}
 {unsigned_cst_float} {
+						printf("constante reconnue: %s\n", yytext);
 						nb_col += yyleng;
-						//yylval.reel = atof(yytext);
 						if(atof(yytext) > 32767 || atof(yytext) < -32768)
 						{
 							printf("Erreur lexicale, ligne %d, colonne %d, %s\n", nb_lignes, nb_col, yytext);
@@ -253,8 +285,8 @@ cst ([1-9]{chiffre}*|0)
 						}
 					}
 {signed_cst_float}  {
+						printf("constante reconnue: %s\n", yytext);
 						nb_col += yyleng;
-						//yylval.reel = atof(yytext);
 						if(atof(yytext) > 32767 || atof(yytext) < -32768)
 						{
 							printf("Erreur lexicale, ligne %d, colonne %d, %s\n", nb_lignes, nb_col, yytext);
@@ -267,8 +299,8 @@ cst ([1-9]{chiffre}*|0)
 						}
 					}
 {signed_cst_int}	{
+						printf("constante reconnue: %s\n", yytext);
 						nb_col += yyleng;
-						//yylval.entier = atoi(yytext); 
 						if(atoi(yytext) > 32767 || atoi(yytext) < -32768)
 						{
 							printf("Erreur lexicale, ligne %d, colonne %d, %s\n", nb_lignes, nb_col, yytext);
@@ -281,8 +313,8 @@ cst ([1-9]{chiffre}*|0)
 						}	
 					}
 {unsigned_cst_int} 	{
+						printf("constante reconnue: %s\n", yytext);
 						nb_col += yyleng;
-						//yylval.entier = atoi(yytext);
 						if(atoi(yytext) > 32767 || atoi(yytext) < -32768)
 						{
 							printf("Erreur lexicale, ligne %d, colonne %d, %s\n", nb_lignes, nb_col, yytext);
@@ -295,10 +327,12 @@ cst ([1-9]{chiffre}*|0)
 						}
 					}
 {cmnt} 		{
+				printf("commentaire: %s\n", yytext);
 				nb_col += yyleng; 
 				return cmnt;
 			}
 {idf} 		{
+				printf("idf reconnu: %s\n", yytext);
 				nb_col += yyleng; 
 				if(yyleng>8)
 				{
@@ -311,6 +345,12 @@ cst ([1-9]{chiffre}*|0)
 					return idf;
 				}
 			}
+^[ ]*\n		{
+				// ignorer les lignes vides
+				nb_col += yyleng;
+				nb_lignes++; 
+				nb_col = 1;
+			}
 [ ] 		{
 				nb_col += yyleng;
 			}
@@ -318,7 +358,7 @@ cst ([1-9]{chiffre}*|0)
 				nb_lignes++; 
 				nb_col = 1; 
 				return eol;
-				}
+			}
 . 			{
 				printf("Erreur lexicale, ligne %d, colonne %d, %s\n", nb_lignes, nb_col, yytext); 
 				nb_col += yyleng;
