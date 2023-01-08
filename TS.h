@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct
 {
@@ -91,7 +92,6 @@ void inserer (char entite[], char code[], char type[], float val, int y)
       e = (liste_elt*) malloc(sizeof(liste_elt));
       strcpy(e->data.name, entite);
       strcpy(e->data.type, code);
-      printf("%s\n", e->data.name);
       listem = inserer_elt(listem, e);
       break;
 
@@ -112,21 +112,21 @@ void rechercher(char entite[], char code[], char type[], float val, int y)
   {
     case 0:
       if(element_existe(liste, entite) != NULL) 
-        printf("l'entite existe deja\n");
+        printf("=> l'entite %s existe deja dans la TS\n", entite);
       else 
         inserer(entite, code, type, val, 0);
       break;
 
     case 1:
       if(elt_existe(listem, entite)) 
-        printf("l'entite existe deja\n");
+        printf("=> l'entite %s existe deja dans la TS\n", entite);
       else 
         inserer(entite, code, type, val, 1);
       break;
 
     case 2:
       if(elt_existe(listes, entite)) 
-        printf("l'entite existe deja\n");
+        printf("=> l'entite %s existe deja dans la TS\n", entite);
       else 
         inserer(entite, code, type, val, 2);
       break;
@@ -146,24 +146,33 @@ int double_declaration(char entite[])
   return -1;
 }
 
+void type_element(char entite[], char* type)
+{
+  liste_element * node = element_existe(liste, entite);
+  if(node != NULL) 
+  {
+    strcpy(type, node->data.type); 
+  }
+}
+
 void afficher()
 {
 
-  printf("/***************listele des symboles IDF*************/\n");
+  printf("\n/***************liste des symboles IDF*************/\n");
   printf("____________________________________________________________________\n");
-  printf("\t| Nom_Entite |  Code_Entite | Type_Entite | Val_Entite\n");
+  printf("\t| Nom_Entite |  Code_Entite   | Type_Entite      | Val_Entite\n");
   printf("____________________________________________________________________\n");
 
   liste_element* node = liste;
   while(node != NULL)
   {
-    printf("\t|%10s |%15s | %12s | %12f\n", node->data.name, node->data.code, node->data.type, node->data.val);
+    printf("\t|%11s |%15s | %16s | %12f\n", node->data.name, node->data.code, node->data.type, node->data.val);
     node = node->svt;
   }
 
 
   liste_elt* node_elt;
-  printf("\n/***************listele des symboles mots clés*************/\n");
+  printf("\n/***************liste des symboles mots cles*************/\n");
   printf("_____________________________________\n");
   printf("\t| NomEntite |  CodeEntite | \n");
   printf("_____________________________________\n");
@@ -176,7 +185,7 @@ void afficher()
   }
 
 
-  printf("\n/***************listele des symboles séparateurs*************/\n");
+  printf("\n/***************liste des symboles separateurs*************/\n");
   printf("_____________________________________\n");
   printf("\t| NomEntite |  CodeEntite | \n");
   printf("_____________________________________\n");
