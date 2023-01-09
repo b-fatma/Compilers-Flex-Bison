@@ -5,12 +5,11 @@
     int qc = 0;
     int nT = 0;
     char tmp[30], tmp2[20];
-    int save_fin_and[20];
-    int save_fin_or[20];
     int i_and = 0, i_or = 0;
     int err = 0;
     int j, cond_for;
     int range = 0;
+    int 
 %}
 
 %union{
@@ -339,7 +338,7 @@ EXP: EXP_OR op_or EXP           {
                                         quadr("BR", tmp, "", "");
                                         sprintf(tmp, "%d", qc);
                                         for(j = 0; j < i_or; j++)
-                                            ajour_quad(save_fin_or[j], 1, tmp);
+                                            ajour_quad(pop(), 1, tmp);
                                         quadr("=", "1", "", $$.res);
                                         strcpy($$.type, $1.type);
                                         nT++; i_or=0;
@@ -356,7 +355,7 @@ EXP_OR: EXP_AND                 {
                                     sprintf(tmp, "%d", qc+3);
                                     quadr("BZ", tmp, "", $1.res);
                                     quadr("=", "1", "", $$.res);
-                                    save_fin_or[i_or] = qc; i_or++;
+                                    push(qc); i_or++;
                                     quadr("BR", "", "", "");
                                     strcpy($$.type, $1.type);
                                 }
@@ -391,7 +390,7 @@ EXP_AND: EXP_AND__ op_and EXP_AND  {
                                         quadr("BR", tmp, "", "");
                                         sprintf(tmp, "%d", qc);
                                         for(j = 0; j < i_and; j++)
-                                            ajour_quad(save_fin_and[j], 1, tmp);
+                                            ajour_quad(pop(), 1, tmp);
                                         quadr("=", "0", "", $$.res);
                                         strcpy($$.type, $1.type);
                                         nT++; i_and=0;
@@ -409,7 +408,7 @@ EXP_AND__: EXP_NOT  {
                         sprintf(tmp, "%d", qc+3);
                         quadr("BNZ", tmp, "", $1.res);
                         quadr("=", "0", "", $$.res);
-                        save_fin_and[i_and] = qc; i_and++;
+                        push(qc); i_and++;
                         quadr("BR", "", "", "");
                         strcpy($$.type, $1.type);
                     }
