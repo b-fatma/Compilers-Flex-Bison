@@ -63,9 +63,7 @@ signed_cst_float ([+-](0|[1-9][0-9]*)\.[0-9]*)
 						// printf("%s", yytext); 
 						return indent;
 					}
-					//if(nb_indent_crt == nb_indent){return;}
-	
-					//printf("\n%d\n\n", nb_indent);
+					
 				}
 
 

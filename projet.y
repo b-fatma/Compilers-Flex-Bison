@@ -9,7 +9,6 @@
     int err = 0;
     int j, cond_for;
     int range = 0;
-    int 
 %}
 
 %union{
@@ -46,17 +45,7 @@ le compilateur ne gère pas:
     - manipulation des tableaux: remplissage, accès aux éléments */
 
 
-/* cette grammaire n'accepte les instructions d'affectation qui viennent juste après les déclarations
-(l'instruction X = X + 1 dans le fichier exemple.txt va générer une erreur semantique- 4eme remarque -) */
 
-/* S: DECLARATIONS INSTRUCTIONS
-;
-DECLARATIONS: DEC DECLARATIONS
-            | 
-;
-INSTRUCTIONS: INST INSTRUCTIONS
-            | 
-; */
 
 S: DECLARATIONS                 {
                                     printf("\n\nProgramme syntaxiquement correct\n\n");
