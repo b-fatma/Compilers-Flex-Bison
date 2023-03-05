@@ -1,0 +1,1738 @@
+State 14 conflicts: 8 reduce/reduce
+State 70 conflicts: 1 shift/reduce
+State 82 conflicts: 1 shift/reduce
+State 113 conflicts: 2 reduce/reduce
+State 115 conflicts: 3 reduce/reduce
+
+
+Grammar
+
+    0 $accept: S $end
+
+    1 S: DECLARATIONS
+
+    2 DECLARATIONS: DEC DECLARATIONS
+    3             | INSTRUCTIONS
+
+    4 INSTRUCTIONS: INST INSTRUCTIONS
+    5             | /* empty */
+
+    6 CMNT: indent CMNT dedent
+    7     | cmnt eol
+
+    8 DEC: LISTE_DEC
+    9    | DEC_VAR
+   10    | DEC_TAB
+   11    | CMNT
+
+   12 LISTE_DEC: TYPE LISTE_IDF eol
+
+   13 TYPE: mc_int
+   14     | mc_float
+   15     | mc_char
+   16     | mc_bool
+
+   17 LISTE_IDF: idf virg LISTE_IDF
+   18          | idf
+
+   19 DEC_VAR: idf op_aff CST eol
+
+   20 CST: cst_bool
+   21    | cst_char
+   22    | unsigned_cst_float
+   23    | po signed_cst_float pf
+   24    | unsigned_cst_int
+   25    | po signed_cst_int pf
+
+   26 DEC_TAB: TYPE idf co unsigned_cst_int cf eol
+
+   27 INST: INST_AFF
+   28     | INST_FOR
+   29     | INST_WHILE
+   30     | INST_IF
+   31     | CMNT
+
+   32 INST_AFF: idf op_aff EXP eol
+
+   33 BLOC: indent DECLARATIONS dedent
+
+   34 INST_IF: B PARTIE_ELSE
+
+   35 B: A BLOC
+
+   36 A: mc_if po EXP pf deux_points eol
+
+   37 PARTIE_ELSE: mc_else deux_points eol BLOC
+   38            | /* empty */
+
+   39 INST_WHILE: C BLOC
+
+   40 C: D EXP pf deux_points eol
+
+   41 D: mc_while po
+
+   42 INST_FOR: mc_for EXP_FOR deux_points eol BLOC
+
+   43 EXP_FOR: idf mc_in mc_range po unsigned_cst_int virg unsigned_cst_int pf
+   44        | idf mc_in idf
+
+   45 EXP: EXP_OR op_or EXP
+   46    | EXP_OR op_or EXP_AND
+   47    | EXP_AND
+
+   48 EXP_OR: EXP_AND
+
+   49 EXP_AND: EXP_AND__ op_and EXP_AND
+   50        | EXP_AND__ op_and EXP_NOT
+   51        | EXP_NOT
+
+   52 EXP_AND__: EXP_NOT
+
+   53 EXP_NOT: op_not EXP_NOT
+   54        | EXPE
+
+   55 EXPE: po EXP pf
+   56     | EXP_COMP
+
+   57 EXP_COMP: EXPA op_diff EXPA
+   58         | EXPA op_eg EXPA
+   59         | EXPA op_inf EXPA
+   60         | EXPA op_inf_eg EXPA
+   61         | EXPA op_sup EXPA
+   62         | EXPA op_sup_eg EXPA
+   63         | EXPA
+
+   64 EXPA: EXPA op_add EXPB
+   65     | EXPA op_sous EXPB
+   66     | EXPB
+
+   67 EXPB: EXPB op_mul EXPC
+   68     | EXPB op_div EXPC
+   69     | EXPC
+
+   70 EXPC: po EXPA pf
+   71     | idf
+   72     | CST
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+eol (258) 7 12 19 26 32 36 37 40 42
+mc_int (259) 13
+mc_float (260) 14
+mc_char (261) 15
+mc_bool (262) 16
+mc_if (263) 36
+mc_else (264) 37
+mc_for (265) 42
+mc_in (266) 43 44
+mc_range (267) 43
+mc_while (268) 41
+op_aff (269) 19 32
+op_sup (270) 61
+op_sup_eg (271) 62
+op_eg (272) 58
+op_diff (273) 57
+op_inf_eg (274) 60
+op_inf (275) 59
+op_add (276) 64
+op_sous (277) 65
+op_mul (278) 67
+op_div (279) 68
+op_and (280) 49 50
+op_or (281) 45 46
+op_not (282) 53
+po (283) 23 25 36 41 43 55 70
+pf (284) 23 25 36 40 43 55 70
+virg (285) 17 43
+deux_points (286) 36 37 40 42
+co (287) 26
+cf (288) 26
+cmnt (289) 7
+indent (290) 6 33
+dedent (291) 6 33
+idf (292) 17 18 19 26 32 43 44 71
+cst_char (293) 21
+cst_bool (294) 20
+signed_cst_int (295) 25
+unsigned_cst_int (296) 24 26 43
+signed_cst_float (297) 23
+unsigned_cst_float (298) 22
+
+
+Nonterminals, with rules where they appear
+
+$accept (44)
+    on left: 0
+S (45)
+    on left: 1, on right: 0
+DECLARATIONS (46)
+    on left: 2 3, on right: 1 2 33
+INSTRUCTIONS (47)
+    on left: 4 5, on right: 3 4
+CMNT (48)
+    on left: 6 7, on right: 6 11 31
+DEC (49)
+    on left: 8 9 10 11, on right: 2
+LISTE_DEC (50)
+    on left: 12, on right: 8
+TYPE (51)
+    on left: 13 14 15 16, on right: 12 26
+LISTE_IDF (52)
+    on left: 17 18, on right: 12 17
+DEC_VAR (53)
+    on left: 19, on right: 9
+CST (54)
+    on left: 20 21 22 23 24 25, on right: 19 72
+DEC_TAB (55)
+    on left: 26, on right: 10
+INST (56)
+    on left: 27 28 29 30 31, on right: 4
+INST_AFF (57)
+    on left: 32, on right: 27
+BLOC (58)
+    on left: 33, on right: 35 37 39 42
+INST_IF (59)
+    on left: 34, on right: 30
+B (60)
+    on left: 35, on right: 34
+A (61)
+    on left: 36, on right: 35
+PARTIE_ELSE (62)
+    on left: 37 38, on right: 34
+INST_WHILE (63)
+    on left: 39, on right: 29
+C (64)
+    on left: 40, on right: 39
+D (65)
+    on left: 41, on right: 40
+INST_FOR (66)
+    on left: 42, on right: 28
+EXP_FOR (67)
+    on left: 43 44, on right: 42
+EXP (68)
+    on left: 45 46 47, on right: 32 36 40 45 55
+EXP_OR (69)
+    on left: 48, on right: 45 46
+EXP_AND (70)
+    on left: 49 50 51, on right: 46 47 48 49
+EXP_AND__ (71)
+    on left: 52, on right: 49 50
+EXP_NOT (72)
+    on left: 53 54, on right: 50 51 52 53
+EXPE (73)
+    on left: 55 56, on right: 54
+EXP_COMP (74)
+    on left: 57 58 59 60 61 62 63, on right: 56
+EXPA (75)
+    on left: 64 65 66, on right: 57 58 59 60 61 62 63 64 65 70
+EXPB (76)
+    on left: 67 68 69, on right: 64 65 66 67 68
+EXPC (77)
+    on left: 70 71 72, on right: 67 68 69
+
+
+state 0
+
+    0 $accept: . S $end
+
+    mc_int    shift, and go to state 1
+    mc_float  shift, and go to state 2
+    mc_char   shift, and go to state 3
+    mc_bool   shift, and go to state 4
+    mc_if     shift, and go to state 5
+    mc_for    shift, and go to state 6
+    mc_while  shift, and go to state 7
+    cmnt      shift, and go to state 8
+    indent    shift, and go to state 9
+    idf       shift, and go to state 10
+
+    $default  reduce using rule 5 (INSTRUCTIONS)
+
+    S             go to state 11
+    DECLARATIONS  go to state 12
+    INSTRUCTIONS  go to state 13
+    CMNT          go to state 14
+    DEC           go to state 15
+    LISTE_DEC     go to state 16
+    TYPE          go to state 17
+    DEC_VAR       go to state 18
+    DEC_TAB       go to state 19
+    INST          go to state 20
+    INST_AFF      go to state 21
+    INST_IF       go to state 22
+    B             go to state 23
+    A             go to state 24
+    INST_WHILE    go to state 25
+    C             go to state 26
+    D             go to state 27
+    INST_FOR      go to state 28
+
+
+state 1
+
+   13 TYPE: mc_int .
+
+    $default  reduce using rule 13 (TYPE)
+
+
+state 2
+
+   14 TYPE: mc_float .
+
+    $default  reduce using rule 14 (TYPE)
+
+
+state 3
+
+   15 TYPE: mc_char .
+
+    $default  reduce using rule 15 (TYPE)
+
+
+state 4
+
+   16 TYPE: mc_bool .
+
+    $default  reduce using rule 16 (TYPE)
+
+
+state 5
+
+   36 A: mc_if . po EXP pf deux_points eol
+
+    po  shift, and go to state 29
+
+
+state 6
+
+   42 INST_FOR: mc_for . EXP_FOR deux_points eol BLOC
+
+    idf  shift, and go to state 30
+
+    EXP_FOR  go to state 31
+
+
+state 7
+
+   41 D: mc_while . po
+
+    po  shift, and go to state 32
+
+
+state 8
+
+    7 CMNT: cmnt . eol
+
+    eol  shift, and go to state 33
+
+
+state 9
+
+    6 CMNT: indent . CMNT dedent
+
+    cmnt    shift, and go to state 8
+    indent  shift, and go to state 9
+
+    CMNT  go to state 34
+
+
+state 10
+
+   19 DEC_VAR: idf . op_aff CST eol
+   32 INST_AFF: idf . op_aff EXP eol
+
+    op_aff  shift, and go to state 35
+
+
+state 11
+
+    0 $accept: S . $end
+
+    $end  shift, and go to state 36
+
+
+state 12
+
+    1 S: DECLARATIONS .
+
+    $default  reduce using rule 1 (S)
+
+
+state 13
+
+    3 DECLARATIONS: INSTRUCTIONS .
+
+    $default  reduce using rule 3 (DECLARATIONS)
+
+
+state 14
+
+   11 DEC: CMNT .
+   31 INST: CMNT .
+
+    $end      reduce using rule 11 (DEC)
+    $end      [reduce using rule 31 (INST)]
+    mc_if     reduce using rule 11 (DEC)
+    mc_if     [reduce using rule 31 (INST)]
+    mc_for    reduce using rule 11 (DEC)
+    mc_for    [reduce using rule 31 (INST)]
+    mc_while  reduce using rule 11 (DEC)
+    mc_while  [reduce using rule 31 (INST)]
+    cmnt      reduce using rule 11 (DEC)
+    cmnt      [reduce using rule 31 (INST)]
+    indent    reduce using rule 11 (DEC)
+    indent    [reduce using rule 31 (INST)]
+    dedent    reduce using rule 11 (DEC)
+    dedent    [reduce using rule 31 (INST)]
+    idf       reduce using rule 11 (DEC)
+    idf       [reduce using rule 31 (INST)]
+    $default  reduce using rule 11 (DEC)
+
+
+state 15
+
+    2 DECLARATIONS: DEC . DECLARATIONS
+
+    mc_int    shift, and go to state 1
+    mc_float  shift, and go to state 2
+    mc_char   shift, and go to state 3
+    mc_bool   shift, and go to state 4
+    mc_if     shift, and go to state 5
+    mc_for    shift, and go to state 6
+    mc_while  shift, and go to state 7
+    cmnt      shift, and go to state 8
+    indent    shift, and go to state 9
+    idf       shift, and go to state 10
+
+    $default  reduce using rule 5 (INSTRUCTIONS)
+
+    DECLARATIONS  go to state 37
+    INSTRUCTIONS  go to state 13
+    CMNT          go to state 14
+    DEC           go to state 15
+    LISTE_DEC     go to state 16
+    TYPE          go to state 17
+    DEC_VAR       go to state 18
+    DEC_TAB       go to state 19
+    INST          go to state 20
+    INST_AFF      go to state 21
+    INST_IF       go to state 22
+    B             go to state 23
+    A             go to state 24
+    INST_WHILE    go to state 25
+    C             go to state 26
+    D             go to state 27
+    INST_FOR      go to state 28
+
+
+state 16
+
+    8 DEC: LISTE_DEC .
+
+    $default  reduce using rule 8 (DEC)
+
+
+state 17
+
+   12 LISTE_DEC: TYPE . LISTE_IDF eol
+   26 DEC_TAB: TYPE . idf co unsigned_cst_int cf eol
+
+    idf  shift, and go to state 38
+
+    LISTE_IDF  go to state 39
+
+
+state 18
+
+    9 DEC: DEC_VAR .
+
+    $default  reduce using rule 9 (DEC)
+
+
+state 19
+
+   10 DEC: DEC_TAB .
+
+    $default  reduce using rule 10 (DEC)
+
+
+state 20
+
+    4 INSTRUCTIONS: INST . INSTRUCTIONS
+
+    mc_if     shift, and go to state 5
+    mc_for    shift, and go to state 6
+    mc_while  shift, and go to state 7
+    cmnt      shift, and go to state 8
+    indent    shift, and go to state 9
+    idf       shift, and go to state 40
+
+    $default  reduce using rule 5 (INSTRUCTIONS)
+
+    INSTRUCTIONS  go to state 41
+    CMNT          go to state 42
+    INST          go to state 20
+    INST_AFF      go to state 21
+    INST_IF       go to state 22
+    B             go to state 23
+    A             go to state 24
+    INST_WHILE    go to state 25
+    C             go to state 26
+    D             go to state 27
+    INST_FOR      go to state 28
+
+
+state 21
+
+   27 INST: INST_AFF .
+
+    $default  reduce using rule 27 (INST)
+
+
+state 22
+
+   30 INST: INST_IF .
+
+    $default  reduce using rule 30 (INST)
+
+
+state 23
+
+   34 INST_IF: B . PARTIE_ELSE
+
+    mc_else  shift, and go to state 43
+
+    $default  reduce using rule 38 (PARTIE_ELSE)
+
+    PARTIE_ELSE  go to state 44
+
+
+state 24
+
+   35 B: A . BLOC
+
+    indent  shift, and go to state 45
+
+    BLOC  go to state 46
+
+
+state 25
+
+   29 INST: INST_WHILE .
+
+    $default  reduce using rule 29 (INST)
+
+
+state 26
+
+   39 INST_WHILE: C . BLOC
+
+    indent  shift, and go to state 45
+
+    BLOC  go to state 47
+
+
+state 27
+
+   40 C: D . EXP pf deux_points eol
+
+    op_not              shift, and go to state 48
+    po                  shift, and go to state 49
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST        go to state 55
+    EXP        go to state 56
+    EXP_OR     go to state 57
+    EXP_AND    go to state 58
+    EXP_AND__  go to state 59
+    EXP_NOT    go to state 60
+    EXPE       go to state 61
+    EXP_COMP   go to state 62
+    EXPA       go to state 63
+    EXPB       go to state 64
+    EXPC       go to state 65
+
+
+state 28
+
+   28 INST: INST_FOR .
+
+    $default  reduce using rule 28 (INST)
+
+
+state 29
+
+   36 A: mc_if po . EXP pf deux_points eol
+
+    op_not              shift, and go to state 48
+    po                  shift, and go to state 49
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST        go to state 55
+    EXP        go to state 66
+    EXP_OR     go to state 57
+    EXP_AND    go to state 58
+    EXP_AND__  go to state 59
+    EXP_NOT    go to state 60
+    EXPE       go to state 61
+    EXP_COMP   go to state 62
+    EXPA       go to state 63
+    EXPB       go to state 64
+    EXPC       go to state 65
+
+
+state 30
+
+   43 EXP_FOR: idf . mc_in mc_range po unsigned_cst_int virg unsigned_cst_int pf
+   44        | idf . mc_in idf
+
+    mc_in  shift, and go to state 67
+
+
+state 31
+
+   42 INST_FOR: mc_for EXP_FOR . deux_points eol BLOC
+
+    deux_points  shift, and go to state 68
+
+
+state 32
+
+   41 D: mc_while po .
+
+    $default  reduce using rule 41 (D)
+
+
+state 33
+
+    7 CMNT: cmnt eol .
+
+    $default  reduce using rule 7 (CMNT)
+
+
+state 34
+
+    6 CMNT: indent CMNT . dedent
+
+    dedent  shift, and go to state 69
+
+
+state 35
+
+   19 DEC_VAR: idf op_aff . CST eol
+   32 INST_AFF: idf op_aff . EXP eol
+
+    op_not              shift, and go to state 48
+    po                  shift, and go to state 49
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST        go to state 70
+    EXP        go to state 71
+    EXP_OR     go to state 57
+    EXP_AND    go to state 58
+    EXP_AND__  go to state 59
+    EXP_NOT    go to state 60
+    EXPE       go to state 61
+    EXP_COMP   go to state 62
+    EXPA       go to state 63
+    EXPB       go to state 64
+    EXPC       go to state 65
+
+
+state 36
+
+    0 $accept: S $end .
+
+    $default  accept
+
+
+state 37
+
+    2 DECLARATIONS: DEC DECLARATIONS .
+
+    $default  reduce using rule 2 (DECLARATIONS)
+
+
+state 38
+
+   17 LISTE_IDF: idf . virg LISTE_IDF
+   18          | idf .
+   26 DEC_TAB: TYPE idf . co unsigned_cst_int cf eol
+
+    virg  shift, and go to state 72
+    co    shift, and go to state 73
+
+    $default  reduce using rule 18 (LISTE_IDF)
+
+
+state 39
+
+   12 LISTE_DEC: TYPE LISTE_IDF . eol
+
+    eol  shift, and go to state 74
+
+
+state 40
+
+   32 INST_AFF: idf . op_aff EXP eol
+
+    op_aff  shift, and go to state 75
+
+
+state 41
+
+    4 INSTRUCTIONS: INST INSTRUCTIONS .
+
+    $default  reduce using rule 4 (INSTRUCTIONS)
+
+
+state 42
+
+   31 INST: CMNT .
+
+    $default  reduce using rule 31 (INST)
+
+
+state 43
+
+   37 PARTIE_ELSE: mc_else . deux_points eol BLOC
+
+    deux_points  shift, and go to state 76
+
+
+state 44
+
+   34 INST_IF: B PARTIE_ELSE .
+
+    $default  reduce using rule 34 (INST_IF)
+
+
+state 45
+
+   33 BLOC: indent . DECLARATIONS dedent
+
+    mc_int    shift, and go to state 1
+    mc_float  shift, and go to state 2
+    mc_char   shift, and go to state 3
+    mc_bool   shift, and go to state 4
+    mc_if     shift, and go to state 5
+    mc_for    shift, and go to state 6
+    mc_while  shift, and go to state 7
+    cmnt      shift, and go to state 8
+    indent    shift, and go to state 9
+    idf       shift, and go to state 10
+
+    $default  reduce using rule 5 (INSTRUCTIONS)
+
+    DECLARATIONS  go to state 77
+    INSTRUCTIONS  go to state 13
+    CMNT          go to state 14
+    DEC           go to state 15
+    LISTE_DEC     go to state 16
+    TYPE          go to state 17
+    DEC_VAR       go to state 18
+    DEC_TAB       go to state 19
+    INST          go to state 20
+    INST_AFF      go to state 21
+    INST_IF       go to state 22
+    B             go to state 23
+    A             go to state 24
+    INST_WHILE    go to state 25
+    C             go to state 26
+    D             go to state 27
+    INST_FOR      go to state 28
+
+
+state 46
+
+   35 B: A BLOC .
+
+    $default  reduce using rule 35 (B)
+
+
+state 47
+
+   39 INST_WHILE: C BLOC .
+
+    $default  reduce using rule 39 (INST_WHILE)
+
+
+state 48
+
+   53 EXP_NOT: op_not . EXP_NOT
+
+    op_not              shift, and go to state 48
+    po                  shift, and go to state 49
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST       go to state 55
+    EXP_NOT   go to state 78
+    EXPE      go to state 61
+    EXP_COMP  go to state 62
+    EXPA      go to state 63
+    EXPB      go to state 64
+    EXPC      go to state 65
+
+
+state 49
+
+   23 CST: po . signed_cst_float pf
+   25    | po . signed_cst_int pf
+   55 EXPE: po . EXP pf
+   70 EXPC: po . EXPA pf
+
+    op_not              shift, and go to state 48
+    po                  shift, and go to state 49
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    signed_cst_int      shift, and go to state 79
+    unsigned_cst_int    shift, and go to state 53
+    signed_cst_float    shift, and go to state 80
+    unsigned_cst_float  shift, and go to state 54
+
+    CST        go to state 55
+    EXP        go to state 81
+    EXP_OR     go to state 57
+    EXP_AND    go to state 58
+    EXP_AND__  go to state 59
+    EXP_NOT    go to state 60
+    EXPE       go to state 61
+    EXP_COMP   go to state 62
+    EXPA       go to state 82
+    EXPB       go to state 64
+    EXPC       go to state 65
+
+
+state 50
+
+   71 EXPC: idf .
+
+    $default  reduce using rule 71 (EXPC)
+
+
+state 51
+
+   21 CST: cst_char .
+
+    $default  reduce using rule 21 (CST)
+
+
+state 52
+
+   20 CST: cst_bool .
+
+    $default  reduce using rule 20 (CST)
+
+
+state 53
+
+   24 CST: unsigned_cst_int .
+
+    $default  reduce using rule 24 (CST)
+
+
+state 54
+
+   22 CST: unsigned_cst_float .
+
+    $default  reduce using rule 22 (CST)
+
+
+state 55
+
+   72 EXPC: CST .
+
+    $default  reduce using rule 72 (EXPC)
+
+
+state 56
+
+   40 C: D EXP . pf deux_points eol
+
+    pf  shift, and go to state 83
+
+
+state 57
+
+   45 EXP: EXP_OR . op_or EXP
+   46    | EXP_OR . op_or EXP_AND
+
+    op_or  shift, and go to state 84
+
+
+state 58
+
+   47 EXP: EXP_AND .
+   48 EXP_OR: EXP_AND .
+
+    op_or     reduce using rule 48 (EXP_OR)
+    $default  reduce using rule 47 (EXP)
+
+
+state 59
+
+   49 EXP_AND: EXP_AND__ . op_and EXP_AND
+   50        | EXP_AND__ . op_and EXP_NOT
+
+    op_and  shift, and go to state 85
+
+
+state 60
+
+   51 EXP_AND: EXP_NOT .
+   52 EXP_AND__: EXP_NOT .
+
+    op_and    reduce using rule 52 (EXP_AND__)
+    $default  reduce using rule 51 (EXP_AND)
+
+
+state 61
+
+   54 EXP_NOT: EXPE .
+
+    $default  reduce using rule 54 (EXP_NOT)
+
+
+state 62
+
+   56 EXPE: EXP_COMP .
+
+    $default  reduce using rule 56 (EXPE)
+
+
+state 63
+
+   57 EXP_COMP: EXPA . op_diff EXPA
+   58         | EXPA . op_eg EXPA
+   59         | EXPA . op_inf EXPA
+   60         | EXPA . op_inf_eg EXPA
+   61         | EXPA . op_sup EXPA
+   62         | EXPA . op_sup_eg EXPA
+   63         | EXPA .
+   64 EXPA: EXPA . op_add EXPB
+   65     | EXPA . op_sous EXPB
+
+    op_sup     shift, and go to state 86
+    op_sup_eg  shift, and go to state 87
+    op_eg      shift, and go to state 88
+    op_diff    shift, and go to state 89
+    op_inf_eg  shift, and go to state 90
+    op_inf     shift, and go to state 91
+    op_add     shift, and go to state 92
+    op_sous    shift, and go to state 93
+
+    $default  reduce using rule 63 (EXP_COMP)
+
+
+state 64
+
+   66 EXPA: EXPB .
+   67 EXPB: EXPB . op_mul EXPC
+   68     | EXPB . op_div EXPC
+
+    op_mul  shift, and go to state 94
+    op_div  shift, and go to state 95
+
+    $default  reduce using rule 66 (EXPA)
+
+
+state 65
+
+   69 EXPB: EXPC .
+
+    $default  reduce using rule 69 (EXPB)
+
+
+state 66
+
+   36 A: mc_if po EXP . pf deux_points eol
+
+    pf  shift, and go to state 96
+
+
+state 67
+
+   43 EXP_FOR: idf mc_in . mc_range po unsigned_cst_int virg unsigned_cst_int pf
+   44        | idf mc_in . idf
+
+    mc_range  shift, and go to state 97
+    idf       shift, and go to state 98
+
+
+state 68
+
+   42 INST_FOR: mc_for EXP_FOR deux_points . eol BLOC
+
+    eol  shift, and go to state 99
+
+
+state 69
+
+    6 CMNT: indent CMNT dedent .
+
+    $default  reduce using rule 6 (CMNT)
+
+
+state 70
+
+   19 DEC_VAR: idf op_aff CST . eol
+   72 EXPC: CST .
+
+    eol  shift, and go to state 100
+
+    eol       [reduce using rule 72 (EXPC)]
+    $default  reduce using rule 72 (EXPC)
+
+
+state 71
+
+   32 INST_AFF: idf op_aff EXP . eol
+
+    eol  shift, and go to state 101
+
+
+state 72
+
+   17 LISTE_IDF: idf virg . LISTE_IDF
+
+    idf  shift, and go to state 102
+
+    LISTE_IDF  go to state 103
+
+
+state 73
+
+   26 DEC_TAB: TYPE idf co . unsigned_cst_int cf eol
+
+    unsigned_cst_int  shift, and go to state 104
+
+
+state 74
+
+   12 LISTE_DEC: TYPE LISTE_IDF eol .
+
+    $default  reduce using rule 12 (LISTE_DEC)
+
+
+state 75
+
+   32 INST_AFF: idf op_aff . EXP eol
+
+    op_not              shift, and go to state 48
+    po                  shift, and go to state 49
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST        go to state 55
+    EXP        go to state 71
+    EXP_OR     go to state 57
+    EXP_AND    go to state 58
+    EXP_AND__  go to state 59
+    EXP_NOT    go to state 60
+    EXPE       go to state 61
+    EXP_COMP   go to state 62
+    EXPA       go to state 63
+    EXPB       go to state 64
+    EXPC       go to state 65
+
+
+state 76
+
+   37 PARTIE_ELSE: mc_else deux_points . eol BLOC
+
+    eol  shift, and go to state 105
+
+
+state 77
+
+   33 BLOC: indent DECLARATIONS . dedent
+
+    dedent  shift, and go to state 106
+
+
+state 78
+
+   53 EXP_NOT: op_not EXP_NOT .
+
+    $default  reduce using rule 53 (EXP_NOT)
+
+
+state 79
+
+   25 CST: po signed_cst_int . pf
+
+    pf  shift, and go to state 107
+
+
+state 80
+
+   23 CST: po signed_cst_float . pf
+
+    pf  shift, and go to state 108
+
+
+state 81
+
+   55 EXPE: po EXP . pf
+
+    pf  shift, and go to state 109
+
+
+state 82
+
+   57 EXP_COMP: EXPA . op_diff EXPA
+   58         | EXPA . op_eg EXPA
+   59         | EXPA . op_inf EXPA
+   60         | EXPA . op_inf_eg EXPA
+   61         | EXPA . op_sup EXPA
+   62         | EXPA . op_sup_eg EXPA
+   63         | EXPA .
+   64 EXPA: EXPA . op_add EXPB
+   65     | EXPA . op_sous EXPB
+   70 EXPC: po EXPA . pf
+
+    op_sup     shift, and go to state 86
+    op_sup_eg  shift, and go to state 87
+    op_eg      shift, and go to state 88
+    op_diff    shift, and go to state 89
+    op_inf_eg  shift, and go to state 90
+    op_inf     shift, and go to state 91
+    op_add     shift, and go to state 92
+    op_sous    shift, and go to state 93
+    pf         shift, and go to state 110
+
+    pf        [reduce using rule 63 (EXP_COMP)]
+    $default  reduce using rule 63 (EXP_COMP)
+
+
+state 83
+
+   40 C: D EXP pf . deux_points eol
+
+    deux_points  shift, and go to state 111
+
+
+state 84
+
+   45 EXP: EXP_OR op_or . EXP
+   46    | EXP_OR op_or . EXP_AND
+
+    op_not              shift, and go to state 48
+    po                  shift, and go to state 49
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST        go to state 55
+    EXP        go to state 112
+    EXP_OR     go to state 57
+    EXP_AND    go to state 113
+    EXP_AND__  go to state 59
+    EXP_NOT    go to state 60
+    EXPE       go to state 61
+    EXP_COMP   go to state 62
+    EXPA       go to state 63
+    EXPB       go to state 64
+    EXPC       go to state 65
+
+
+state 85
+
+   49 EXP_AND: EXP_AND__ op_and . EXP_AND
+   50        | EXP_AND__ op_and . EXP_NOT
+
+    op_not              shift, and go to state 48
+    po                  shift, and go to state 49
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST        go to state 55
+    EXP_AND    go to state 114
+    EXP_AND__  go to state 59
+    EXP_NOT    go to state 115
+    EXPE       go to state 61
+    EXP_COMP   go to state 62
+    EXPA       go to state 63
+    EXPB       go to state 64
+    EXPC       go to state 65
+
+
+state 86
+
+   61 EXP_COMP: EXPA op_sup . EXPA
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPA  go to state 117
+    EXPB  go to state 64
+    EXPC  go to state 65
+
+
+state 87
+
+   62 EXP_COMP: EXPA op_sup_eg . EXPA
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPA  go to state 118
+    EXPB  go to state 64
+    EXPC  go to state 65
+
+
+state 88
+
+   58 EXP_COMP: EXPA op_eg . EXPA
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPA  go to state 119
+    EXPB  go to state 64
+    EXPC  go to state 65
+
+
+state 89
+
+   57 EXP_COMP: EXPA op_diff . EXPA
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPA  go to state 120
+    EXPB  go to state 64
+    EXPC  go to state 65
+
+
+state 90
+
+   60 EXP_COMP: EXPA op_inf_eg . EXPA
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPA  go to state 121
+    EXPB  go to state 64
+    EXPC  go to state 65
+
+
+state 91
+
+   59 EXP_COMP: EXPA op_inf . EXPA
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPA  go to state 122
+    EXPB  go to state 64
+    EXPC  go to state 65
+
+
+state 92
+
+   64 EXPA: EXPA op_add . EXPB
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPB  go to state 123
+    EXPC  go to state 65
+
+
+state 93
+
+   65 EXPA: EXPA op_sous . EXPB
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPB  go to state 124
+    EXPC  go to state 65
+
+
+state 94
+
+   67 EXPB: EXPB op_mul . EXPC
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPC  go to state 125
+
+
+state 95
+
+   68 EXPB: EXPB op_div . EXPC
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    unsigned_cst_int    shift, and go to state 53
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPC  go to state 126
+
+
+state 96
+
+   36 A: mc_if po EXP pf . deux_points eol
+
+    deux_points  shift, and go to state 127
+
+
+state 97
+
+   43 EXP_FOR: idf mc_in mc_range . po unsigned_cst_int virg unsigned_cst_int pf
+
+    po  shift, and go to state 128
+
+
+state 98
+
+   44 EXP_FOR: idf mc_in idf .
+
+    $default  reduce using rule 44 (EXP_FOR)
+
+
+state 99
+
+   42 INST_FOR: mc_for EXP_FOR deux_points eol . BLOC
+
+    indent  shift, and go to state 45
+
+    BLOC  go to state 129
+
+
+state 100
+
+   19 DEC_VAR: idf op_aff CST eol .
+
+    $default  reduce using rule 19 (DEC_VAR)
+
+
+state 101
+
+   32 INST_AFF: idf op_aff EXP eol .
+
+    $default  reduce using rule 32 (INST_AFF)
+
+
+state 102
+
+   17 LISTE_IDF: idf . virg LISTE_IDF
+   18          | idf .
+
+    virg  shift, and go to state 72
+
+    $default  reduce using rule 18 (LISTE_IDF)
+
+
+state 103
+
+   17 LISTE_IDF: idf virg LISTE_IDF .
+
+    $default  reduce using rule 17 (LISTE_IDF)
+
+
+state 104
+
+   26 DEC_TAB: TYPE idf co unsigned_cst_int . cf eol
+
+    cf  shift, and go to state 130
+
+
+state 105
+
+   37 PARTIE_ELSE: mc_else deux_points eol . BLOC
+
+    indent  shift, and go to state 45
+
+    BLOC  go to state 131
+
+
+state 106
+
+   33 BLOC: indent DECLARATIONS dedent .
+
+    $default  reduce using rule 33 (BLOC)
+
+
+state 107
+
+   25 CST: po signed_cst_int pf .
+
+    $default  reduce using rule 25 (CST)
+
+
+state 108
+
+   23 CST: po signed_cst_float pf .
+
+    $default  reduce using rule 23 (CST)
+
+
+state 109
+
+   55 EXPE: po EXP pf .
+
+    $default  reduce using rule 55 (EXPE)
+
+
+state 110
+
+   70 EXPC: po EXPA pf .
+
+    $default  reduce using rule 70 (EXPC)
+
+
+state 111
+
+   40 C: D EXP pf deux_points . eol
+
+    eol  shift, and go to state 132
+
+
+state 112
+
+   45 EXP: EXP_OR op_or EXP .
+
+    $default  reduce using rule 45 (EXP)
+
+
+state 113
+
+   46 EXP: EXP_OR op_or EXP_AND .
+   47    | EXP_AND .
+   48 EXP_OR: EXP_AND .
+
+    eol       reduce using rule 46 (EXP)
+    eol       [reduce using rule 47 (EXP)]
+    op_or     reduce using rule 48 (EXP_OR)
+    pf        reduce using rule 46 (EXP)
+    pf        [reduce using rule 47 (EXP)]
+    $default  reduce using rule 46 (EXP)
+
+
+state 114
+
+   49 EXP_AND: EXP_AND__ op_and EXP_AND .
+
+    $default  reduce using rule 49 (EXP_AND)
+
+
+state 115
+
+   50 EXP_AND: EXP_AND__ op_and EXP_NOT .
+   51        | EXP_NOT .
+   52 EXP_AND__: EXP_NOT .
+
+    eol       reduce using rule 50 (EXP_AND)
+    eol       [reduce using rule 51 (EXP_AND)]
+    op_and    reduce using rule 52 (EXP_AND__)
+    op_or     reduce using rule 50 (EXP_AND)
+    op_or     [reduce using rule 51 (EXP_AND)]
+    pf        reduce using rule 50 (EXP_AND)
+    pf        [reduce using rule 51 (EXP_AND)]
+    $default  reduce using rule 50 (EXP_AND)
+
+
+state 116
+
+   23 CST: po . signed_cst_float pf
+   25    | po . signed_cst_int pf
+   70 EXPC: po . EXPA pf
+
+    po                  shift, and go to state 116
+    idf                 shift, and go to state 50
+    cst_char            shift, and go to state 51
+    cst_bool            shift, and go to state 52
+    signed_cst_int      shift, and go to state 79
+    unsigned_cst_int    shift, and go to state 53
+    signed_cst_float    shift, and go to state 80
+    unsigned_cst_float  shift, and go to state 54
+
+    CST   go to state 55
+    EXPA  go to state 133
+    EXPB  go to state 64
+    EXPC  go to state 65
+
+
+state 117
+
+   61 EXP_COMP: EXPA op_sup EXPA .
+   64 EXPA: EXPA . op_add EXPB
+   65     | EXPA . op_sous EXPB
+
+    op_add   shift, and go to state 92
+    op_sous  shift, and go to state 93
+
+    $default  reduce using rule 61 (EXP_COMP)
+
+
+state 118
+
+   62 EXP_COMP: EXPA op_sup_eg EXPA .
+   64 EXPA: EXPA . op_add EXPB
+   65     | EXPA . op_sous EXPB
+
+    op_add   shift, and go to state 92
+    op_sous  shift, and go to state 93
+
+    $default  reduce using rule 62 (EXP_COMP)
+
+
+state 119
+
+   58 EXP_COMP: EXPA op_eg EXPA .
+   64 EXPA: EXPA . op_add EXPB
+   65     | EXPA . op_sous EXPB
+
+    op_add   shift, and go to state 92
+    op_sous  shift, and go to state 93
+
+    $default  reduce using rule 58 (EXP_COMP)
+
+
+state 120
+
+   57 EXP_COMP: EXPA op_diff EXPA .
+   64 EXPA: EXPA . op_add EXPB
+   65     | EXPA . op_sous EXPB
+
+    op_add   shift, and go to state 92
+    op_sous  shift, and go to state 93
+
+    $default  reduce using rule 57 (EXP_COMP)
+
+
+state 121
+
+   60 EXP_COMP: EXPA op_inf_eg EXPA .
+   64 EXPA: EXPA . op_add EXPB
+   65     | EXPA . op_sous EXPB
+
+    op_add   shift, and go to state 92
+    op_sous  shift, and go to state 93
+
+    $default  reduce using rule 60 (EXP_COMP)
+
+
+state 122
+
+   59 EXP_COMP: EXPA op_inf EXPA .
+   64 EXPA: EXPA . op_add EXPB
+   65     | EXPA . op_sous EXPB
+
+    op_add   shift, and go to state 92
+    op_sous  shift, and go to state 93
+
+    $default  reduce using rule 59 (EXP_COMP)
+
+
+state 123
+
+   64 EXPA: EXPA op_add EXPB .
+   67 EXPB: EXPB . op_mul EXPC
+   68     | EXPB . op_div EXPC
+
+    op_mul  shift, and go to state 94
+    op_div  shift, and go to state 95
+
+    $default  reduce using rule 64 (EXPA)
+
+
+state 124
+
+   65 EXPA: EXPA op_sous EXPB .
+   67 EXPB: EXPB . op_mul EXPC
+   68     | EXPB . op_div EXPC
+
+    op_mul  shift, and go to state 94
+    op_div  shift, and go to state 95
+
+    $default  reduce using rule 65 (EXPA)
+
+
+state 125
+
+   67 EXPB: EXPB op_mul EXPC .
+
+    $default  reduce using rule 67 (EXPB)
+
+
+state 126
+
+   68 EXPB: EXPB op_div EXPC .
+
+    $default  reduce using rule 68 (EXPB)
+
+
+state 127
+
+   36 A: mc_if po EXP pf deux_points . eol
+
+    eol  shift, and go to state 134
+
+
+state 128
+
+   43 EXP_FOR: idf mc_in mc_range po . unsigned_cst_int virg unsigned_cst_int pf
+
+    unsigned_cst_int  shift, and go to state 135
+
+
+state 129
+
+   42 INST_FOR: mc_for EXP_FOR deux_points eol BLOC .
+
+    $default  reduce using rule 42 (INST_FOR)
+
+
+state 130
+
+   26 DEC_TAB: TYPE idf co unsigned_cst_int cf . eol
+
+    eol  shift, and go to state 136
+
+
+state 131
+
+   37 PARTIE_ELSE: mc_else deux_points eol BLOC .
+
+    $default  reduce using rule 37 (PARTIE_ELSE)
+
+
+state 132
+
+   40 C: D EXP pf deux_points eol .
+
+    $default  reduce using rule 40 (C)
+
+
+state 133
+
+   64 EXPA: EXPA . op_add EXPB
+   65     | EXPA . op_sous EXPB
+   70 EXPC: po EXPA . pf
+
+    op_add   shift, and go to state 92
+    op_sous  shift, and go to state 93
+    pf       shift, and go to state 110
+
+
+state 134
+
+   36 A: mc_if po EXP pf deux_points eol .
+
+    $default  reduce using rule 36 (A)
+
+
+state 135
+
+   43 EXP_FOR: idf mc_in mc_range po unsigned_cst_int . virg unsigned_cst_int pf
+
+    virg  shift, and go to state 137
+
+
+state 136
+
+   26 DEC_TAB: TYPE idf co unsigned_cst_int cf eol .
+
+    $default  reduce using rule 26 (DEC_TAB)
+
+
+state 137
+
+   43 EXP_FOR: idf mc_in mc_range po unsigned_cst_int virg . unsigned_cst_int pf
+
+    unsigned_cst_int  shift, and go to state 138
+
+
+state 138
+
+   43 EXP_FOR: idf mc_in mc_range po unsigned_cst_int virg unsigned_cst_int . pf
+
+    pf  shift, and go to state 139
+
+
+state 139
+
+   43 EXP_FOR: idf mc_in mc_range po unsigned_cst_int virg unsigned_cst_int pf .
+
+    $default  reduce using rule 43 (EXP_FOR)
